@@ -153,6 +153,8 @@ class DomjudgeConverter:
                 'result' : _to_result(_judging_map[e['id']]['outcome']),
                 'submissionTime' : int((e['time'] - self._contest['start']) / 60) # in minutes
             }
+
+            if r['result'] == 'No - Compilation Error': continue
             o['runs'].append(r)
 
         return o
