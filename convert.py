@@ -108,6 +108,7 @@ class DomjudgeConverter:
                 'id': self._problems_map[e['id']],
                 'title': e['name'],
                 'name': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[id],
+                'color': e.get('color'),
             })
         return problems_json
 
