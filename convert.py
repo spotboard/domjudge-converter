@@ -147,11 +147,15 @@ class DomjudgeConverter:
                     'judging': '',
                 }[outcome]
 
+            j = _judging_map.get(e['id'])
+            if j is None: # not yet judged
+                j = {'outcome' : ''}
+
             r = {
                 'id' : (run_idx + 1),
                 'problem' : self._problems_map[e['problem']],
                 'team' : e['team'],
-                'result' : _to_result(_judging_map[e['id']]['outcome']),
+                'result' : _to_result(j['outcome']),
                 'submissionTime' : int((e['time'] - self._contest['start']) / 60) # in minutes
             }
 
