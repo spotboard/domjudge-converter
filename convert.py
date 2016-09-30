@@ -4,6 +4,7 @@ Convert Domjudge API to spotboard JSONs.
 
 import requests
 from pprint import pprint
+import time
 import json
 
 class DomjudgeConverter:
@@ -122,7 +123,7 @@ class DomjudgeConverter:
     def get_runs_json(self):
         o = {}
         o['time'] = {
-            'contestTime' : self._contest['length'], #18000,
+            'contestTime' : max(0, int(time.time()) - self._contest['start']), #18000,
             'noMoreUpdate' : False,
             'timestamp' : 0,
         }
