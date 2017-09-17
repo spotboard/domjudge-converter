@@ -123,8 +123,9 @@ class DomjudgeConverter:
 
     def get_runs_json(self):
         o = {}
+        current_time = min(int(time.time()), self._contest['end'])
         o['time'] = {
-            'contestTime' : max(0, int(time.time()) - self._contest['start']), #18000,
+            'contestTime' : max(0, current_time - self._contest['start']), #18000,
             'noMoreUpdate' : False,
             'timestamp' : 0,
         }
