@@ -123,10 +123,12 @@ class DomjudgeConverter:
 
     def get_runs_json(self):
         o = {}
-        current_time = min(int(time.time()), self._contest['end'])
+
+        current_time = int(time.time())
+        is_frozen_now = current_time >= self._contest['freeze'] and current_time < self._contest['unfreeze']
         o['time'] = {
-            'contestTime' : max(0, current_time - self._contest['start']), #18000,
-            'noMoreUpdate' : False,
+            'contestTime' : max(0, min(current_time, self._contest['end']) - self._contest['start']), #18000,
+            'noMoreUpdate' : is_frozen_now,
             'timestamp' : 0,
         }
         o['runs'] = []
@@ -169,7 +171,7 @@ class DomjudgeConverter:
             if r['result'] == 'No - Compilation Error': continue
 
             # Submission after freeze time
-            if e['time'] >= self._contest['freeze'] and int(time.time()) <= self._contest['unfreeze']:
+            if e['time'] >= self._contest['freeze'] and is_frozen_now:
                 r['result'] = ''
 
             o['runs'].append(r)
