@@ -82,7 +82,7 @@ class DomjudgeConverter:
     def _fetch_judgings(self):
         print 'Fetching /judgings ...'
         r = self.session.get(self.DOMJUDGE_API_BASE + 'judgings?cid=' + str(self.cid))
-        judgings = r.json()  # id, submission, outcome
+        judgings = sorted(r.json(), key=lambda x: x['id']) # id, submission, outcome
         r.close()
         print '  Total %d judgings' % len(judgings)
         return judgings
