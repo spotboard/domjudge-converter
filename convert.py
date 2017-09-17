@@ -161,7 +161,13 @@ class DomjudgeConverter:
                 'submissionTime' : int((e['time'] - self._contest['start']) / 60) # in minutes
             }
 
+            # Ignore compile error submission
             if r['result'] == 'No - Compilation Error': continue
+
+            # Submission after freeze time
+            if e['time'] >= self._contest['freeze'] and int(time.time()) <= self._contest['unfreeze']:
+                r['result'] = ''
+
             o['runs'].append(r)
 
         return o
