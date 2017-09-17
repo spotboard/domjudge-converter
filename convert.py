@@ -137,6 +137,10 @@ class DomjudgeConverter:
 
         for run_idx, e in enumerate(self._submissions):
             #e: id, team, problem, language, time
+
+            # Ignore TOO-LATE Submission
+            if e['time'] >= self._contest['end']: continue
+
             def _to_result(outcome):
                 if not outcome: return ''
                 return {
