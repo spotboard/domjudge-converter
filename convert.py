@@ -125,7 +125,7 @@ class DomjudgeConverter:
         o = {}
 
         current_time = int(time.time())
-        is_frozen_now = current_time >= self._contest['freeze'] and current_time < self._contest['unfreeze']
+        is_frozen_now = current_time >= self._contest['freeze'] and (self._contest['unfreeze'] is None or current_time < self._contest['unfreeze'])
         o['time'] = {
             'contestTime' : max(0, min(current_time, self._contest['end']) - self._contest['start']), #18000,
             'noMoreUpdate' : is_frozen_now,
