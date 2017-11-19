@@ -187,7 +187,7 @@ class DOMjudgeConverter {
             return x;
         });
         // No pending submission after frozen
-        if (!this.config['show_pending'])
+        if (!this.config['show_pending'] && !config.unfreeze)
             this.submissions = this.submissions.filter(e => !(frozen && e.time >= contest.freeze));
 
         await Promise.all([
