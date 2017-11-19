@@ -1,0 +1,29 @@
+{
+  "name": "domjudge-converter",
+  "version": "1.0.0",
+  "description": "DOMjudge Spotboard converter",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spotboard/domjudge-converter.git"
+  },
+  "keywords": [
+    "domjudge",
+    "spotboard"
+  ],
+  "author": "Myungwoo Chun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spotboard/domjudge-converter/issues"
+  },
+  "homepage": "https://github.com/spotboard/domjudge-converter#readme",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "axios": "^0.17.1",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
+  }
+}

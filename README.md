@@ -1,8 +1,23 @@
-DOMJudge to Spotboard Converter
-===============================
+# Spotboard DOMjudge converter
 
-Sample Usage:
+This converter generates `contest.json` and `runs.json` file for Spotboard using DOMjudge API v3.
+
+## Requirements
+
+- Node.js 8+
+
+### Install package
 
 ```
-python convert.py --api_base "http://2016.ucpc.io/api/" --cid 2 --login_id <ID> --login_pw <PASSWORD>
+npm i
+```
+
+## Configuration
+
+[config.js](./config.js)
+
+## How to run
+
+```
+npm start
 ```
