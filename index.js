@@ -18,6 +18,12 @@ class DOMjudgeConverter {
         this.sortorder = sortorder;
     }
 
+    async loadConfig() {
+        console.log('Fetching config ...');
+        this.config = (await axios.get('config')).data;
+        console.log('Fetching config ... finished!!!');
+    }
+
     async loadContest() {
         console.log('Fetching contest ...');
         this.contest = (await axios.get('contests')).data[this.cid];
@@ -69,7 +75,7 @@ class DOMjudgeConverter {
             return acc;
         }, {});
         // Merge judgings and submission.
-        submissions = submissions.map(e => {
+        this.submissions = submissions.map(e => {
             let j = judgings[e.id];
             let outcome = j && j.outcome || '';
             let x = {...e, outcome};
@@ -91,25 +97,27 @@ class DOMjudgeConverter {
 
             return x;
         });
+
         // Ignore compile error submissions
-        this.submissions = submissions.filter(e => e.outcome !== 'No - Compilation Error');
+        if (!this.config['compile_penalty'])
+            this.submissions = this.submissions.filter(e => e.outcome !== 'No - Compilation Error');
         console.log('Fetching submissions ... finished!!!');
     }
 
     async writeContest() {
         console.log('Writing into contest.json ...');
         const getTeamName = t => t.affiliation ? `${t.name} (${t.affiliation})` : t.name;
-        let teams = this.teams.map(e => ({
+        const teams = this.teams.map(e => ({
             id: e.id,
             name: getTeamName(e),
         }));
-        let problems = this.problems.map((e, idx) => ({
+        const problems = this.problems.map((e, idx) => ({
             id: idx,
             title: e.name,
             name: e.short_name,
             color: e.color || '',
         }));
-        let contest = {
+        const contest = {
             title: this.contest.name,
             systemName: 'DOMjudge',
             systemVersion: config.domjudge.version || '',
@@ -126,33 +134,24 @@ class DOMjudgeConverter {
     }
 
     async writeRuns() {
-        const {contest} = this;
+        const {contest, now} = this;
         console.log('Writing into runs.json ...');
-        const now = Date.now() / 1000;
-        const frozen = (contest.freeze && now >= contest.freeze) && !(config.unfreeze || contest.unfreeze && now >= contest.unfreeze);
 
-        let data = {
+        const data = {
             time: {
                 contestTime: Math.max(0, Math.min(Math.floor(now-contest.start), contest.length)),
-                noMoreUpdate: frozen,
+                noMoreUpdate: this.frozen,
                 timestamp: 0,
             },
+            runs: this.submissions.map(e => ({
+                id: e.id,
+                problem: this.problemIdToIdx[e.problem],
+                team: e.team,
+                result: e.outcome,
+                submissionTime: Math.floor((e.time - contest.start) / 60),
+            })),
         };
 
-        // Remove outcome of submission which submitted after freeze.
-        let submissions = this.submissions.map(e => {
-            let x = {...e};
-            if (frozen && e.time >= contest.freeze) x.outcome = '';
-            return x;
-        });
-
-        data.runs = submissions.map(e => ({
-            id: e.id,
-            problem: this.problemIdToIdx[e.problem],
-            team: e.team,
-            result: e.outcome,
-            submissionTime: Math.floor((e.time - contest.start) / 60),
-        }));
         await new Promise((resolve, reject) => {
             fs.writeFile(path.join(config.dest, 'runs.json'), JSON.stringify(data, null, 4), err => {
                 if (err) reject(err);
@@ -164,6 +163,7 @@ class DOMjudgeConverter {
 
     async do() {
         await Promise.all([
+            this.loadConfig(),
             this.loadContest(),
             this.loadTeams(),
             this.loadProblems(),
@@ -171,10 +171,24 @@ class DOMjudgeConverter {
         ]);
         console.log('======================\n');
 
+        this.now = Date.now() / 1000;
+        const {contest, now} = this;
+        this.frozen = (contest.freeze && now >= contest.freeze) && !(config.unfreeze || contest.unfreeze && now >= contest.unfreeze);
+        const {frozen} = this;
+
         // Filter submissions by teams here.
         this.submissions = this.submissions.filter(e => this.teamIdToObj[e.team]);
         // Ignore too-late submissions
         this.submissions = this.submissions.filter(e => e.time < this.contest.end);
+        // Remove outcome of submission which submitted after freeze.
+        this.submissions = this.submissions.map(e => {
+            let x = {...e};
+            if (frozen && e.time >= contest.freeze) x.outcome = '';
+            return x;
+        });
+        // No pending submission after frozen
+        if (!this.config['show_pending'])
+            this.submissions = this.submissions.filter(e => !(frozen && e.time >= contest.freeze));
 
         await Promise.all([
             this.writeContest(),
