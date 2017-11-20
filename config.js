@@ -1,30 +1,52 @@
 module.exports = {
     domjudge: {
-        // DOMjudge api base URL
+        /**
+         * DOMjudge api base URL
+         */
         api: 'http://localhost/domjudge/api/',
 
-        // DOMjudge user information (needs jury permission)
+        /**
+         * DOMjudge uesr information
+         * Required role: jury
+         */
         username: 'username',
         password: 'password',
 
-        // DOMjudge version to display
+        /**
+         * DOMjudge version which displayed at bottom of Spotboard
+         */
         version: '5.3.0',
     },
     filter: {
-        // Target contest cid
+        /**
+         * Contest cid which has to be viewed in Spotboard
+         */
         cid: 1,
-        // Target team categories sortorder
+
+        /**
+         * DOMjudge team category's sortorder to be viewed.
+         * For participiants, its default value is 0.
+         */
         sortorder: 0,
     },
 
-    // Directory to make json files
+    /**
+     * Destination path which files will be created.
+     *
+     * e.g. '.'
+     * e.g. '/var/www/html/spotboard/'
+     */
     dest: '.',
-    // Force scoreboard unfreeze (for awarding)
+
+    /**
+     * Force unfreezing scoreboard client side.
+     * This might be useful when collecting final runs.json privately.
+     */
     unfreeze: false,
 
     /**
      * Running interval in milliseconds.
-     * null for running only once
+     * null for running only once.
      *
      * e.g. null
      * e.g. 3000
@@ -32,7 +54,9 @@ module.exports = {
     interval: 3000,
 
     axios: {
-        // API request timeout
+        /**
+         * API request timeout
+         */
         timeout: 3000,
     },
 };
