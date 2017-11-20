@@ -106,10 +106,10 @@ class DOMjudgeConverter {
 
     async writeContest() {
         console.log('Writing into contest.json ...');
-        const getTeamName = t => t.affiliation ? `${t.name} (${t.affiliation})` : t.name;
         const teams = this.teams.map(e => ({
             id: e.id,
-            name: getTeamName(e),
+            name: e.name,
+            group: e.affiliation,
         }));
         const problems = this.problems.map((e, idx) => ({
             id: idx,
