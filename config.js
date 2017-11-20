@@ -11,11 +11,6 @@ module.exports = {
          */
         username: 'username',
         password: 'password',
-
-        /**
-         * DOMjudge version which displayed at bottom of Spotboard
-         */
-        version: '5.3.0',
     },
     filter: {
         /**

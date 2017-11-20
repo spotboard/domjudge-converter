@@ -2,6 +2,7 @@ const config = require('./config');
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
+const cheerio = require('cheerio');
 const axios = require('axios').create({
     baseURL: config.domjudge.api,
     timeout: config.axios.timeout || 3000,
@@ -16,6 +17,16 @@ class DOMjudgeConverter {
         const {cid, sortorder} = config.filter;
         this.cid = cid;
         this.sortorder = sortorder;
+    }
+
+    async loadApiMain() {
+        console.log('Fetching api info ...');
+        try{
+            const $ = cheerio.load((await axios.get('')).data);
+            this.domjudgeVersion = $('body > p')[0].children[4].data.split(' ').slice(-1)[0];
+        }catch(err){
+        }
+        console.log('Fetching api info ... finished!!!');
     }
 
     async loadConfig() {
@@ -120,7 +131,7 @@ class DOMjudgeConverter {
         const contest = {
             title: this.contest.name,
             systemName: 'DOMjudge',
-            systemVersion: config.domjudge.version || '',
+            systemVersion: this.domjudgeVersion || '',
             problems,
             teams,
         };
@@ -163,6 +174,7 @@ class DOMjudgeConverter {
 
     async do() {
         await Promise.all([
+            this.loadApiMain(),
             this.loadConfig(),
             this.loadContest(),
             this.loadTeams(),
