@@ -185,7 +185,7 @@ class DOMjudgeConverter {
 
         this.now = Date.now() / 1000;
         const {contest, now} = this;
-        this.frozen = (contest.freeze && now >= contest.freeze) && !(config.unfreeze || contest.unfreeze && now >= contest.unfreeze);
+        this.frozen = Boolean((contest.freeze && now >= contest.freeze) && !(config.unfreeze || contest.unfreeze && now >= contest.unfreeze));
         const {frozen} = this;
 
         // Filter submissions by teams here.
