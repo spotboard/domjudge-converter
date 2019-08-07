@@ -2,8 +2,9 @@ module.exports = {
     domjudge: {
         /**
          * DOMjudge api base URL
+         * Do not add '/' at the end of line!
          */
-        api: 'http://localhost/domjudge/api/',
+        api: 'http://localhost/api',
 
         /**
          * DOMjudge uesr information
@@ -14,7 +15,8 @@ module.exports = {
     },
     filter: {
         /**
-         * Contest cid which has to be viewed in Spotboard
+         * In DOMjudge v7, 'cid' means 'CID' in the admin panel which is unique integer and assigned to each contest.
+         * You have to set 'data_source' option value to 0, which is in the configuration section at admin panel.
          */
         cid: 1,
 
