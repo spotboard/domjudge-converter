@@ -159,6 +159,7 @@ class DOMjudgeConverter {
                         break;
                 }
             }
+            if (submission['result'] === null) submission['result'] = "";
         }
 
         // Ignore compile error submissions
