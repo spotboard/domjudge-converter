@@ -267,7 +267,7 @@ class DOMjudgeConverter {
 
         const [is_freeze_time_passed, freeze_start_time_in_min] = (() => {
             if(this.contest.scoreboard_freeze_duration === null) {
-                return false;
+                return [false, -1];
             }
 
             const scoreboard_freeze_duration_str = this.contest.scoreboard_freeze_duration.split(":");
